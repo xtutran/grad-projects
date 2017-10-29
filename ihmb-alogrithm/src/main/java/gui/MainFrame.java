@@ -1,21 +1,28 @@
 package gui;
 
-import evaluation.Evaluator;
-import search.ImageIndexing;
-import search.ImageSearcher;
-import evaluation.Pair;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.Calendar;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.table.DefaultTableModel;
+
+import org.apache.commons.io.FilenameUtils;
+
+import evaluation.Evaluator;
+import features.HSV166Histogram.DistanceFunction;
+import search.ImageIndexing;
+import search.ImageSearcher;
 
 /**
  * @author Le Hoang
@@ -25,7 +32,8 @@ public class MainFrame extends javax.swing.JFrame {
     public final String[] DistanceMethodNames = {
             "Histogram Euclidean Distance (HED)",
             "Histogram Quadratic Distance Measures (HQDM)",
-            "Integrated Histogram Bin Matching (IHBM)"};
+            "Integrated Histogram Bin Matching (IHBM)"
+    };
     // files fields
     String inputFileName = "";
     File inputFile = null;
@@ -38,7 +46,7 @@ public class MainFrame extends javax.swing.JFrame {
     BufferedImage resultImage;
     // Evaluator
     Evaluator evaluator;
-    DistanceMeasureMethod distanceMethod = DistanceMeasureMethod.HED;
+    DistanceFunction distanceMethod = DistanceFunction.HED;
     int kForNearestNeibor = 5;
     // additional fields
     private javax.swing.JPanel selectFolderPanel;
@@ -76,6 +84,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable resultSet;
     private javax.swing.JTextField inputImageAbsolutePath;
+
+    public static String IMAGE_DB = "/Volumes/BOOTCAMP/Code/previous_work/school-projects/ihmb-alogrithm/features.db";
+    private ImageIndexing ii = ImageIndexing.getInstance(IMAGE_DB);
+
     /**
      * Creates new form MainFrame
      */
@@ -87,8 +99,8 @@ public class MainFrame extends javax.swing.JFrame {
      * @param path the command line arguments
      */
 
-    public static void Indexing(String path) {
-        ImageIndexing ii = new ImageIndexing(path);
+    public void Indexing(String path) {
+        ii.createImageDb(path, false);
         ii.indexImages();
     }
 
@@ -167,8 +179,9 @@ public class MainFrame extends javax.swing.JFrame {
         selectFolderPanel = new javax.swing.JPanel();
         evaluationFile = new javax.swing.JLabel();
 
-        featuresFile.setText("Features database: FeaturesDatabase.txt");
-        evaluationFile.setText("Evaluation: Evaluation.txt");
+
+//        featuresFile.setText("Features database: FeaturesDatabase.txt");
+//        evaluationFile.setText("Evaluation: Evaluation.txt");
         featuresFile.setForeground(Color.RED);
         evaluationFile.setForeground(Color.RED);
         jLabel3.setText("Image Folder");
@@ -429,11 +442,8 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
 
-        inputPanel.setBorder(javax.swing.BorderFactory
-                .createTitledBorder("Input"));
-
-        inputImagePanel.setBorder(javax.swing.BorderFactory
-                .createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        inputPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Input"));
+        inputImagePanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(
                 inputImagePanel);
@@ -582,8 +592,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel2.setText("Distance measure method");
 
-        distanceMethodSelector.setModel(new javax.swing.DefaultComboBoxModel(
-                DistanceMethodNames));
+        distanceMethodSelector.setModel(new javax.swing.DefaultComboBoxModel(DistanceMethodNames));
         distanceMethodSelector
                 .addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -895,7 +904,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void folderSelectActionPerformed(java.awt.event.ActionEvent evt) {
         // Browse button
-        JFileChooser jf = new JFileChooser("./indexing");
+        JFileChooser jf = new JFileChooser(".");
         jf.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         if (jf.showOpenDialog(this) != 0) {
 
@@ -906,9 +915,9 @@ public class MainFrame extends javax.swing.JFrame {
         folderNameTextField.setText(indexingFolderName);
 
         if (indexingFolderName != null) {
-            ImageIndexing.setPath(indexingFolderName);
-            File features = new File(indexingFolderName
-                    + "\\FeaturesDatabase.txt");
+            //TODO: review
+            //ImageIndexing.setPath(indexingFolderName);
+            File features = new File(IMAGE_DB);
             File evaluation = new File(indexingFolderName + "\\Evaluation.txt");
             if (!features.exists()) {
                 featuresFile.setForeground(Color.RED);
@@ -966,6 +975,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
+    private ImageSearcher imageSearcher = ImageSearcher.getInstance();
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // Search button
         searchStatus.setForeground(Color.RED);
@@ -974,72 +984,77 @@ public class MainFrame extends javax.swing.JFrame {
             return;
         }
 
-        ImageSearcher imageSearch = new ImageSearcher();
         searchStatus.setForeground(Color.BLUE);
         searchStatus.setText("Searching...");
         repaint();
         Calendar rightNow = Calendar.getInstance();
         long begin = rightNow.getTimeInMillis();
-        String[][] results = imageSearch.searchFromFile(targetImage,
-                distanceMethod, kForNearestNeibor);
-
-        String[] tempoResults = new String[results.length];
-
-        for (int i = 0; i < results.length; i++) {
-            tempoResults[i] = results[i][0];
-            int lastSeparator = tempoResults[i].lastIndexOf('\\');
-            tempoResults[i] = tempoResults[i].substring(lastSeparator + 1);
+        Object[][] results = new Object[0][];
+        try {
+            imageSearcher.calcSimilarity(inputFile, distanceMethod);
+            results = imageSearcher.search(inputFile, distanceMethod, 3);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
         }
 
-        for (int i = 0; i < results.length; i++) {
-            results[i] = new String[2];
-            results[i][0] = tempoResults[i];
-
-            if (evaluator == null) {
-                results[i][1] = "";
-            } else if (evaluator.evaluate(inputFileName, tempoResults[i])) {
-                results[i][1] = "YES";
-            } else {
-                results[i][1] = "NO";
-            }
-        }
-
-        Pair<Float> precisionAndRecall = new Pair<Float>(0f, 0f);
-        if (evaluator == null) {
-        } else {
-            evaluator.calculatePrecisionAndRecall(inputFileName, tempoResults,
-                    precisionAndRecall);
-        }
-
-        DecimalFormat format = new DecimalFormat("0.000");
-        String numberInTrueFormat = format.format(precisionAndRecall.first);
-        precisionContent.setText(numberInTrueFormat);
-        numberInTrueFormat = format.format(precisionAndRecall.second);
-        recallContent.setText(numberInTrueFormat);
-
-        searchStatus.setForeground(Color.GREEN);
-        searchStatus.setText("Completed");
-
-        rightNow = Calendar.getInstance();
-        long end = rightNow.getTimeInMillis();
-
-        long duration = end - begin;
-        System.out.println(duration);
-        duration /= 1000;
-        int h = 0, m = 0, s = 0;
-        h = (int) (duration / 3600);
-        m = (int) ((duration % 3600) / 60);
-        s = (int) ((duration % 3600) % 60);
-        StringBuilder sb = new StringBuilder();
-        if (h != 0) {
-            sb.append(h + " h  ");
-        }
-        if (m != 0) {
-            sb.append(m + " m  ");
-        }
-        sb.append(s + " s");
-
-        timeContent.setText(sb.toString());
+//        String[] tempoResults = new String[results.length];
+//
+//        for (int i = 0; i < results.length; i++) {
+//            tempoResults[i] = results[i][0];
+//            int lastSeparator = tempoResults[i].lastIndexOf('\\');
+//            tempoResults[i] = tempoResults[i].substring(lastSeparator + 1);
+//        }
+//
+//        for (int i = 0; i < results.length; i++) {
+//            results[i] = new String[2];
+//            results[i][0] = tempoResults[i];
+//
+//            if (evaluator == null) {
+//                results[i][1] = "";
+//            } else if (evaluator.evaluate(inputFileName, tempoResults[i])) {
+//                results[i][1] = "YES";
+//            } else {
+//                results[i][1] = "NO";
+//            }
+//        }
+//
+//        Pair<Float> precisionAndRecall = new Pair<Float>(0f, 0f);
+//        if (evaluator == null) {
+//        } else {
+//            evaluator.calculatePrecisionAndRecall(inputFileName, tempoResults,
+//                    precisionAndRecall);
+//        }
+//
+//        DecimalFormat format = new DecimalFormat("0.000");
+//        String numberInTrueFormat = format.format(precisionAndRecall.first);
+//        precisionContent.setText(numberInTrueFormat);
+//        numberInTrueFormat = format.format(precisionAndRecall.second);
+//        recallContent.setText(numberInTrueFormat);
+//
+//        searchStatus.setForeground(Color.GREEN);
+//        searchStatus.setText("Completed");
+//
+//        rightNow = Calendar.getInstance();
+//        long end = rightNow.getTimeInMillis();
+//
+//        long duration = end - begin;
+//        System.out.println(duration);
+//        duration /= 1000;
+//        int h = 0, m = 0, s = 0;
+//        h = (int) (duration / 3600);
+//        m = (int) ((duration % 3600) / 60);
+//        s = (int) ((duration % 3600) % 60);
+//        StringBuilder sb = new StringBuilder();
+//        if (h != 0) {
+//            sb.append(h + " h  ");
+//        }
+//        if (m != 0) {
+//            sb.append(m + " m  ");
+//        }
+//        sb.append(s + " s");
+//
+//        timeContent.setText(sb.toString());
 
         String[] headers = {"FilePath", "Relevant"};
         DefaultTableModel model = new DefaultTableModel(results, headers);
@@ -1050,11 +1065,13 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void resultSetSelectionPerformed(ListSelectionEvent e) {
         int index = resultSet.getSelectedRow();
+        if (index < 0)  {
+        	return;
+        }
         String s = (String) resultSet.getValueAt(index, 0);
         if (s != null) {
             try {
-                resultImage = ImageIO.read(new File(indexingFolderName + "\\"
-                        + s));
+                resultImage = ImageIO.read(new File(s));
                 jPanel7.setImage(resultImage);
                 jPanel7.paintComponents(inputImagePanel.getGraphics());
                 this.repaint();
@@ -1063,26 +1080,21 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
-    ;
-
     private void distanceMethodSelectorActionPerformed(
             java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
         // Select feature extraction
         switch (distanceMethodSelector.getSelectedIndex()) {
             case 0:
-                distanceMethod = DistanceMeasureMethod.HED;
+                distanceMethod = DistanceFunction.HED;
                 break;
             case 1:
-                distanceMethod = DistanceMeasureMethod.HQDM;
+                distanceMethod = DistanceFunction.HQDM;
                 break;
             case 2:
-                distanceMethod = DistanceMeasureMethod.IHBM;
+                distanceMethod = DistanceFunction.IHBM;
                 break;
         }
-    }
-    public enum DistanceMeasureMethod {
-        HI, HED, HQDM, IHBM
     }
     // End of variables declaration
 }
@@ -1107,5 +1119,28 @@ class ImagePanel extends JPanel {
             g.drawImage(icon, 0, 0, null); // see javadoc for more info on the
             // parameters
         }
+    }
+}
+
+class ImageFilter extends FileFilter {
+
+    //Accept all directories and all gif, jpg, tiff, or png files.
+    public boolean accept(File f) {
+//        if (f.isDirectory()) {
+//            return true;
+//        }
+
+        String extension = FilenameUtils.getExtension(f.getName());
+        return extension.equals("tiff") ||
+                extension.equals("tif") ||
+                extension.equals("gif") ||
+                extension.equals("jpeg") ||
+                extension.equals("jpg") ||
+                extension.equals("png");
+    }
+
+    //The description of this filter
+    public String getDescription() {
+        return "Image Files";
     }
 }
