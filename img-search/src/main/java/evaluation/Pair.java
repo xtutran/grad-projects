@@ -17,10 +17,10 @@ public class Pair<T> {
         }
         return false;
     }
-    
+
     @Override
     public String toString() {
-    	return first.toString() + second.toString();
+        return first.toString() + second.toString();
     }
 
     @Override

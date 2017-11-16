@@ -2,19 +2,19 @@ package search;
 
 import features.extract.FeatureData;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class ImageIndexing {
+    private final static ImageIndexing INSTANCE = new ImageIndexing();
     private String dbPath;
     private List<FeatureData> db;
-    private final static ImageIndexing INSTANCE = new ImageIndexing();
 
     private ImageIndexing() {
         this.dbPath = "features.db";
@@ -24,6 +24,12 @@ public class ImageIndexing {
     public static ImageIndexing getInstance(String path) {
         INSTANCE.dbPath = path;
         return INSTANCE;
+    }
+
+    public static void main(String args[]) {
+        ImageIndexing indexor = ImageIndexing.getInstance("/Volumes/BOOTCAMP/Code/previous_work/school-projects/ihmb-alogrithm/features.db");
+        indexor.createImageDb("/Volumes/BOOTCAMP/Code/previous_work/school-projects/ihmb-alogrithm/indexing", false);
+        indexor.indexImages();
     }
 
     public String getDbPath() {
@@ -76,12 +82,6 @@ public class ImageIndexing {
                 ex.printStackTrace();
             }
         }
-    }
-
-    public static void main(String args[]) {
-        ImageIndexing indexor = ImageIndexing.getInstance("/Volumes/BOOTCAMP/Code/previous_work/school-projects/ihmb-alogrithm/features.db");
-        indexor.createImageDb("/Volumes/BOOTCAMP/Code/previous_work/school-projects/ihmb-alogrithm/indexing", false);
-        indexor.indexImages();
     }
 }
 

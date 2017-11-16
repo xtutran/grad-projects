@@ -1,8 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xtutran</groupId>
-    <artifactId>ihmb-alogrithm</artifactId>
+    <artifactId>img-search</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <repositories>
@@ -60,11 +60,11 @@
             <version>2.3</version>
         </dependency>
 
-        <dependency>
-            <groupId>chartdirector</groupId>
-            <artifactId>chartdirector</artifactId>
-            <version>1.0</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>chartdirector</groupId>-->
+        <!--<artifactId>chartdirector</artifactId>-->
+        <!--<version>1.0</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>com.jgoodies</groupId>
@@ -170,7 +170,7 @@
     </properties>
 
     <build>
-        <finalName>forex-sriamba</finalName>
+        <finalName>img-search</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -187,7 +187,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.xtutran.app.ForexApp</mainClass>
+                                    <mainClass>gui.MainFrame</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

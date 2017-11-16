@@ -2,18 +2,14 @@ package features.extract;
 
 import features.HSV166Histogram;
 import net.semanticmetadata.lire.imageanalysis.LireFeature;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Arrays;
-
 import java.util.List;
 
 public class FeatureData implements Serializable {
@@ -37,8 +33,16 @@ public class FeatureData implements Serializable {
         return feature;
     }
 
+    public static void main(String args[]) throws IOException {
+        FeatureData fd = FeatureData.extract(new File("/Volumes/BOOTCAMP/Code/previous_work/school-projects/ihmb-alogrithm/indexing/0001.jpg"));
+
+        System.out.println(fd);
+        LireFeature sch = fd.getLireFeatureFromRepresentation(fd.toString());
+        System.out.println(sch.getDistance(sch));
+    }
+
     private void add(double[] newFeatures) {
-        for(double feature : newFeatures) {
+        for (double feature : newFeatures) {
             this.hsv166Histogram.add(feature);
         }
     }
@@ -62,13 +66,5 @@ public class FeatureData implements Serializable {
 
     public String getImagePath() {
         return imagePath;
-    }
-
-    public static void main(String args[]) throws IOException {
-        FeatureData fd = FeatureData.extract(new File("/Volumes/BOOTCAMP/Code/previous_work/school-projects/ihmb-alogrithm/indexing/0001.jpg"));
-
-        System.out.println(fd);
-        LireFeature sch = fd.getLireFeatureFromRepresentation(fd.toString());
-        System.out.println(sch.getDistance(sch));
     }
 }
