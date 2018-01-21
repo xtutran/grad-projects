@@ -1,6 +1,9 @@
 package com.github.xtutran.ui.service.utilizer;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class Config {
@@ -8,8 +11,8 @@ public class Config {
      * Name of the file we are looking for to read the configuration.
      */
     private static final String RESOURCE_NAME = "config.properties";
-    private final Properties data;
     private static final Config INSTANCE = new Config();
+    private final Properties data;
 
     private Config() {
         data = new Properties();
@@ -23,9 +26,9 @@ public class Config {
     private void load() {
         System.out.println("load");
         try {
-            File optionFile = new File(RESOURCE_NAME) ;
-            if(!optionFile.exists()) {
-                System.exit(1) ;
+            File optionFile = new File(RESOURCE_NAME);
+            if (!optionFile.exists()) {
+                System.exit(1);
             }
 
             InputStream in = new FileInputStream(optionFile);
@@ -33,7 +36,7 @@ public class Config {
             in.close();
 
         } catch (IOException ex) {
-            ex.printStackTrace() ;
+            ex.printStackTrace();
             System.err.println(ex.getMessage());
         }
     }
@@ -63,6 +66,7 @@ public class Config {
     public int getUpdateMinute() {
         return parseInt(data.getProperty("updateMinute"), 6);
     }
+
     public int getTimeToPause() {
         return parseInt(data.getProperty("timeToPause"), 12);
     }

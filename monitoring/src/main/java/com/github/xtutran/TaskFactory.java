@@ -1,9 +1,9 @@
 package com.github.xtutran;
 
-import com.github.xtutran.ui.service.utilizer.*;
 import com.github.xtutran.detection.EventDetection;
 import com.github.xtutran.detection.Message;
 import com.github.xtutran.snapshot.Snapshot;
+import com.github.xtutran.ui.service.utilizer.*;
 
 public class TaskFactory {
     // static int updateTime = 20;

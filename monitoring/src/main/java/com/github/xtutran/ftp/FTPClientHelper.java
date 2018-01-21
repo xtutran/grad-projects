@@ -56,6 +56,13 @@ public class FTPClientHelper {
 //        }
 //    }
 
+    public static void main(String[] args) {
+
+        FTPClientHelper helper = new FTPClientHelper("192.168.1.240");
+        helper.login("adam", "Xifj39sky");
+        helper.uploadFile("2018-01-21_11-23-24.jpg", "/upload123/teeee/2018-01-21_11-23-24.jpg");
+    }
+
     private boolean makeDirectories(FTPClient ftpClient, String dirPath) throws IOException {
         String[] pathElements = dirPath.split("/");
         if (pathElements.length > 0) {
@@ -92,34 +99,6 @@ public class FTPClientHelper {
         } catch (IOException e) {
             return false;
         }
-    }
-
-    public boolean uploadFile(String localFile, String remoteFile) {
-        boolean result = false;
-        try {
-            if(ftp.isConnected() && ftp.isAvailable()) {
-                ftp.setFileType(FTP.BINARY_FILE_TYPE);
-                InputStream input = new FileInputStream(new File(localFile));
-
-                String parentDir = FilenameUtils.getPathNoEndSeparator(remoteFile);
-                makeDirectories(ftp, parentDir);
-                ftp.storeFile(remoteFile, input);
-                result = true;
-            }
-
-        } catch(IOException e) {
-            e.printStackTrace();
-        } finally {
-            if(ftp.isConnected()) {
-                try {
-                    ftp.disconnect();
-                    ftp.logout();
-                } catch(IOException ioe) {
-                    // do nothing
-                }
-            }
-        }
-        return result;
     }
 
 //    public boolean checkAccountInfo() throws Exception {
@@ -164,11 +143,32 @@ public class FTPClientHelper {
 //
 //    }
 
-    public static void main(String[] args) {
+    public boolean uploadFile(String localFile, String remoteFile) {
+        boolean result = false;
+        try {
+            if (ftp.isConnected() && ftp.isAvailable()) {
+                ftp.setFileType(FTP.BINARY_FILE_TYPE);
+                InputStream input = new FileInputStream(new File(localFile));
 
-        FTPClientHelper helper = new FTPClientHelper("192.168.1.240");
-        helper.login("adam", "Xifj39sky");
-        helper.uploadFile("2018-01-21_11-23-24.jpg", "/upload123/teeee/2018-01-21_11-23-24.jpg");
+                String parentDir = FilenameUtils.getPathNoEndSeparator(remoteFile);
+                makeDirectories(ftp, parentDir);
+                ftp.storeFile(remoteFile, input);
+                result = true;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (ftp.isConnected()) {
+                try {
+                    ftp.disconnect();
+                    ftp.logout();
+                } catch (IOException ioe) {
+                    // do nothing
+                }
+            }
+        }
+        return result;
     }
 
 //    public String getFolder() {

@@ -3,12 +3,31 @@ package com.github.xtutran.detection;
 /**
  * Created by xtutran on 21/1/18.
  */
+
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jnativehook.mouse.NativeMouseInputListener;
 
 public class GlobalMouseListenerExample implements NativeMouseInputListener {
+    public static void main(String[] args) {
+        try {
+            GlobalScreen.registerNativeHook();
+        } catch (NativeHookException ex) {
+            System.err.println("There was a problem registering the native hook.");
+            System.err.println(ex.getMessage());
+
+            System.exit(1);
+        }
+
+        // Construct the example object.
+        GlobalMouseListenerExample example = new GlobalMouseListenerExample();
+
+        // Add the appropriate listeners.
+        GlobalScreen.addNativeMouseListener(example);
+        GlobalScreen.addNativeMouseMotionListener(example);
+    }
+
     public void nativeMouseClicked(NativeMouseEvent e) {
         System.out.println("Mouse Clicked: " + e.getClickCount());
         System.out.println(e.paramString());
@@ -28,24 +47,5 @@ public class GlobalMouseListenerExample implements NativeMouseInputListener {
 
     public void nativeMouseDragged(NativeMouseEvent e) {
         System.out.println("Mouse Dragged: " + e.getX() + ", " + e.getY());
-    }
-
-    public static void main(String[] args) {
-        try {
-            GlobalScreen.registerNativeHook();
-        }
-        catch (NativeHookException ex) {
-            System.err.println("There was a problem registering the native hook.");
-            System.err.println(ex.getMessage());
-
-            System.exit(1);
-        }
-
-        // Construct the example object.
-        GlobalMouseListenerExample example = new GlobalMouseListenerExample();
-
-        // Add the appropriate listeners.
-        GlobalScreen.addNativeMouseListener(example);
-        GlobalScreen.addNativeMouseMotionListener(example);
     }
 }

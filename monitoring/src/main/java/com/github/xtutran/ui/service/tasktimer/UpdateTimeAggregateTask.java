@@ -1,7 +1,7 @@
 package com.github.xtutran.ui.service.tasktimer;
 
-import com.github.xtutran.ui.MainFrame;
 import com.github.xtutran.detection.EventDetection;
+import com.github.xtutran.ui.MainFrame;
 
 import java.util.TimerTask;
 

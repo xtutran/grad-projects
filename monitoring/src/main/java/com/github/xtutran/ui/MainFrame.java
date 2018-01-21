@@ -11,13 +11,12 @@
 
 package com.github.xtutran.ui;
 
-import com.github.xtutran.FreelancerMonitoring;
+import com.github.xtutran.DesktopMonitoring;
 import com.github.xtutran.TaskFactory;
-import com.github.xtutran.ftp.FTPClientHelper;
 import com.github.xtutran.detection.Message;
+import com.github.xtutran.ftp.FTPClientHelper;
 import com.github.xtutran.ui.service.utilizer.Config;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -796,7 +795,7 @@ public class MainFrame extends javax.swing.JFrame {
         endTime = "End time :              ";
 
         startTime.setText(beginTime + "                 " + endTime);
-        FreelancerMonitoring.setStatus(FreelancerMonitoring.RUNNING);
+        DesktopMonitoring.setStatus(DesktopMonitoring.RUNNING);
         TaskFactory.restartLogTasks();
     }
 
@@ -806,7 +805,7 @@ public class MainFrame extends javax.swing.JFrame {
         startButton.setEnabled(true);
         pauseButton.setEnabled(false);
         stopButton.setEnabled(true);
-        FreelancerMonitoring.setStatus(FreelancerMonitoring.PAUSED);
+        DesktopMonitoring.setStatus(DesktopMonitoring.PAUSED);
         TaskFactory.cancelLogTasks();
     }
 
@@ -828,7 +827,7 @@ public class MainFrame extends javax.swing.JFrame {
             Calendar currentTime = Calendar.getInstance();
             endTime = "End time : " + dateFormat.format(currentTime.getTime());
             startTime.setText(beginTime + "             " + endTime);
-            FreelancerMonitoring.setStatus(FreelancerMonitoring.STOPPED);
+            DesktopMonitoring.setStatus(DesktopMonitoring.STOPPED);
             TaskFactory.cancelLogTasks();
             viewreportButton.setEnabled(true);
             saveReport();
@@ -1025,7 +1024,7 @@ public class MainFrame extends javax.swing.JFrame {
             // bw.newLine() ;
             bw.close();
 
-            if(ftp != null) {
+            if (ftp != null) {
                 ftp.uploadFile(fileReport.getAbsolutePath(), ftpFolder + "/" + fileReport.getName());
             }
             FileUtils.deleteQuietly(fileReport);

@@ -5,7 +5,6 @@
 package com.github.xtutran;
 
 import com.github.xtutran.ui.LoginPanel;
-import com.github.xtutran.ui.service.utilizer.Config;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,10 +14,9 @@ import java.io.IOException;
 /**
  * @author kekkaishi
  */
-public class FreelancerMonitoring {
+public class DesktopMonitoring {
 
     /**
-     *
      * the command line arguments
      */
     public static int NOT_START = 0, RUNNING = 1, PAUSED = 2, STOPPED = 3;

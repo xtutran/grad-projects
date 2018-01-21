@@ -22,6 +22,7 @@ public class LoginPanel extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField username;
     private javax.swing.JPasswordField password;
+
     /**
      * Creates new form LoginPanel
      */

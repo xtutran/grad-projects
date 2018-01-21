@@ -12,7 +12,6 @@
 package com.github.xtutran.ui;
 
 import com.github.xtutran.TaskFactory;
-import com.github.xtutran.ftp.FTPClientHelper;
 import com.github.xtutran.ui.service.utilizer.Config;
 
 import java.awt.*;
@@ -43,6 +42,7 @@ public class SettingForm extends javax.swing.JPanel {
     private javax.swing.JTextField noOfScreenShotTextField;
     private javax.swing.JButton saveButton;
     private MainFrame parent;
+
     /**
      * Creates new form settingForm
      */

@@ -18,6 +18,7 @@ public class LoginSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JButton loginButton;
     private javax.swing.JTextField passwordTextField;
     private MainFrame parent;
+
     public LoginSettingsPanel(MainFrame _parent) {
         initComponents();
         parent = _parent;

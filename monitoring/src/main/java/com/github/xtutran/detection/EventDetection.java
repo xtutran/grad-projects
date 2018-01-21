@@ -1,6 +1,6 @@
 package com.github.xtutran.detection;
 
-import com.github.xtutran.FreelancerMonitoring;
+import com.github.xtutran.DesktopMonitoring;
 import com.github.xtutran.ScheduleAction;
 import com.github.xtutran.TaskFactory;
 import org.jnativehook.GlobalScreen;
@@ -37,8 +37,7 @@ public class EventDetection extends ScheduleAction<EvenDetectionTask> implements
 
         try {
             GlobalScreen.registerNativeHook();
-        }
-        catch (NativeHookException ex) {
+        } catch (NativeHookException ex) {
             System.err.println("There was a problem registering the native hook.");
             System.err.println(ex.getMessage());
 
@@ -111,7 +110,7 @@ public class EventDetection extends ScheduleAction<EvenDetectionTask> implements
 
         if (!isActiveLog) {
 
-            if (FreelancerMonitoring.currentStatus == FreelancerMonitoring.RUNNING) {
+            if (DesktopMonitoring.currentStatus == DesktopMonitoring.RUNNING) {
                 Message.addMessage(Message.RESUME);
                 long duration2 = currentTime.getTime().getTime()
                         - EventDetection.lastDetection.getTime();

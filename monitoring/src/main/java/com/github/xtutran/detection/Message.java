@@ -18,6 +18,7 @@ public class Message extends ScheduleAction<MessageTask> {
             "timer will stop in " + TaskFactory.timeToPause + " seconds if no movement is detected",
             "timer stopped because of " + TaskFactory.timeToPause + " seconds idle time",
             "movement detected", "timer resumed", "screenshot"};
+
     public Message(int seconds) {
         super(seconds, MessageTask.class);
         // TODO Auto-generated constructor stub
