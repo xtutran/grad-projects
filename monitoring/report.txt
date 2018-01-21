@@ -1,0 +1,3 @@
+01-21-2018 Start time : 04:59 PM End time : 05:00 PM| working time 1 minutes (0 hours )| idle 1 minutes (0 hours )
+01-21-2018 Start time : 05:12 PM End time : 05:12 PM| working time 0 minutes (0 hours )| idle 0 minutes (0 hours )
+01-21-2018 Start time : 05:13 PM End time : 05:13 PM| working time 0 minutes (0 hours )| idle 0 minutes (0 hours )
